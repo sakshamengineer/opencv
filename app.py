@@ -8,7 +8,7 @@ st.title("Face Detector App")
 st.subheader("Detect Faces By uploading Images or using Webcam")
 
 st.sidebar.write("### Your input Source")
-opt = st.sidebar.radio("Select Your Option :",["Upload Image","Open video","For Real Time"])
+opt = st.sidebar.radio("Select Your Option :",["Upload Image","Open video"])
 
 if opt == "Open video":
     enable = st.checkbox("Open camera")
@@ -41,26 +41,26 @@ elif opt == "Upload Image":
         with col2:
             st.write("### After Detecting Faces : ")
             st.image(img,caption=f"face(s) Detected")
-else:
-    ch = st.radio("Your video source",["Internal","External"])
-    if st.button("Detect Face"):
-        if ch == "Internal":
-            cap = cv2.VideoCapture(0)
-        else:
-            cap = cv2.VideoCapture(1)
+# else:
+#     ch = st.radio("Your video source",["Internal","External"])
+#     if st.button("Detect Face"):
+#         if ch == "Internal":
+#             cap = cv2.VideoCapture(0)
+#         else:
+#             cap = cv2.VideoCapture(1)
         
-        while True:
-            success,frame = cap.read()
-            if not success:
-                st.error("Something Went Wrong!!")
-                break
-            frame = cv2.flip(frame,1)
-            gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(gray,1.1,10)
-            for (x,y,w,h) in faces:
-                cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),3)
+#         while True:
+#             success,frame = cap.read()
+#             if not success:
+#                 st.error("Something Went Wrong!!")
+#                 break
+#             frame = cv2.flip(frame,1)
+#             gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+#             faces = face_cascade.detectMultiScale(gray,1.1,10)
+#             for (x,y,w,h) in faces:
+#                 cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),3)
 
-            cv2.imshow("Face Detector(press q to exit)",frame)
-            if cv2.waitKey(1) & 255 == ord('q'):
-                break
-        cap.release()
+#             cv2.imshow("Face Detector(press q to exit)",frame)
+#             if cv2.waitKey(1) & 255 == ord('q'):
+#                 break
+#         cap.release()
