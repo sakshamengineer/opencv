@@ -64,4 +64,3 @@ else:
             if cv2.waitKey(1) & 255 == ord('q'):
                 break
         cap.release()
-        cv2.destroyAllWindows()
