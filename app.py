@@ -1,6 +1,5 @@
 import streamlit as st
 import cv2
-from streamlit_webrtc import VideoProcessorBase, webrtc_streamer,WebRtcMode
 import numpy as np
 st.set_page_config("Face Detector",page_icon="🎥")
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
