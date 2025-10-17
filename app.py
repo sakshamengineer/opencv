@@ -58,10 +58,15 @@ else:
     webrtc_streamer(key="Face detector",
                     mode=WebRtcMode.SENDRECV,
                     video_processor_factory=VideoProcessor,
+                    rtc_configuration={
+                        "iceServers" : [
+                            {"urls": ["stun:stun.l.google.com:19302"]},
+                        ]
+                    },
                     media_stream_constraints={
                         "video":{
                             "frameRate" : {"ideal":40,"max" : 60}
                         },
                         "audio" : False,
                     }
-                    )
+    )
