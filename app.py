@@ -1,5 +1,6 @@
 import streamlit as st
 import cv2
+from streamlit_webrtc import VideoProcessorBase, webrtc_streamer,WebRtcMode
 import numpy as np
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -8,7 +9,7 @@ st.title("Face Detector App")
 st.subheader("Detect Faces By uploading Images or using Webcam")
 
 st.sidebar.write("### Your input Source")
-opt = st.sidebar.radio("Select Your Option :",["Upload Image","Open video"])
+opt = st.sidebar.radio("Select Your Option :",["Upload Image","Open video","Real time"])
 
 if opt == "Open video":
     enable = st.checkbox("Open camera")
@@ -41,26 +42,26 @@ elif opt == "Upload Image":
         with col2:
             st.write("### After Detecting Faces : ")
             st.image(img,caption=f"face(s) Detected")
-# else:
-#     ch = st.radio("Your video source",["Internal","External"])
-#     if st.button("Detect Face"):
-#         if ch == "Internal":
-#             cap = cv2.VideoCapture(0)
-#         else:
-#             cap = cv2.VideoCapture(1)
-        
-#         while True:
-#             success,frame = cap.read()
-#             if not success:
-#                 st.error("Something Went Wrong!!")
-#                 break
-#             frame = cv2.flip(frame,1)
-#             gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-#             faces = face_cascade.detectMultiScale(gray,1.1,10)
-#             for (x,y,w,h) in faces:
-#                 cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),3)
+else:
+    st.subheader("**Real Time Video Capture**")
+    class VideoProcessor(VideoProcessorBase):
+        def recv(self,frame):
+            image = frame.to_ndarray(format = "bgr24")
+            gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray,1.1,5)
 
-#             cv2.imshow("Face Detector(press q to exit)",frame)
-#             if cv2.waitKey(1) & 255 == ord('q'):
-#                 break
-#         cap.release()
+            for (x,y,w,h) in faces:
+                cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),2)
+
+            return frame.from_ndarray(image,format= "bgr24")
+        
+    webrtc_streamer(key="Face detector",
+                    mode=WebRtcMode.SENDRECV,
+                    video_processor_factory=VideoProcessor,
+                    media_stream_constraints={
+                        "video":{
+                            "frameRate" : {"ideal":40,"max" : 60}
+                        },
+                        "audio" : False,
+                    }
+                    )
