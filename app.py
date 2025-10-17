@@ -9,7 +9,7 @@ st.title("Face Detector App")
 st.subheader("Detect Faces By uploading Images or using Webcam")
 
 st.sidebar.write("### Your input Source")
-opt = st.sidebar.radio("Select Your Option :",["Upload Image","Open video","Real time"])
+opt = st.sidebar.radio("Select Your Option :",["Upload Image","Open video"])
 
 if opt == "Open video":
     enable = st.checkbox("Open camera")
@@ -36,37 +36,37 @@ elif opt == "Upload Image":
         with col1:
             st.write("### Your Image : ")
             st.image(img)
-        faces = face_cascade.detectMultiScale(gray,1.1,10)
+        faces = face_cascade.detectMultiScale(gray,1.2,5)
         for (x,y,w,h) in faces:
-            cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),7)
+            cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),5)
         with col2:
             st.write("### After Detecting Faces : ")
             st.image(img,caption=f"face(s) Detected")
-else:
-    st.subheader("**Real Time Video Capture**")
-    class VideoProcessor(VideoProcessorBase):
-        def recv(self,frame):
-            image = frame.to_ndarray(format = "bgr24")
-            gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(gray,1.1,5)
+# else:
+#     st.subheader("**Real Time Video Capture**")
+#     class VideoProcessor(VideoProcessorBase):
+#         def recv(self,frame):
+#             image = frame.to_ndarray(format = "bgr24")
+#             gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+#             faces = face_cascade.detectMultiScale(gray,1.1,5)
 
-            for (x,y,w,h) in faces:
-                cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),2)
+#             for (x,y,w,h) in faces:
+#                 cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),2)
 
-            return frame.from_ndarray(image,format= "bgr24")
+#             return frame.from_ndarray(image,format= "bgr24")
         
-    webrtc_streamer(key="Face detector",
-                    mode=WebRtcMode.SENDRECV,
-                    video_processor_factory=VideoProcessor,
-                    rtc_configuration={
-                        "iceServers" : [
-                            {"urls": ["stun:stun.l.google.com:19302"]},
-                        ]
-                    },
-                    media_stream_constraints={
-                        "video":{
-                            "frameRate" : {"ideal":40,"max" : 60}
-                        },
-                        "audio" : False,
-                    }
-    )
+#     webrtc_streamer(key="Face detector",
+#                     mode=WebRtcMode.SENDRECV,
+#                     video_processor_factory=VideoProcessor,
+#                     rtc_configuration={
+#                         "iceServers" : [
+#                             {"urls": ["stun:stun.l.google.com:19302"]},
+#                         ]
+#                     },
+#                     media_stream_constraints={
+#                         "video":{
+#                             "frameRate" : {"ideal":40,"max" : 60}
+#                         },
+#                         "audio" : False,
+#                     }
+#     )
